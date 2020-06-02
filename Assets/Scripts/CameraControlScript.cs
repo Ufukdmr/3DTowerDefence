@@ -9,6 +9,7 @@ public class CameraControlScript : MonoBehaviour
     private Transform cameraTransform;
     public float camMovSpeed = 0;
     public float camRotateSpeed = 0;
+    public float camZoomSpeed = 0;
 
     [SerializeField]
     GameObject cameraContObj;
@@ -84,9 +85,18 @@ public class CameraControlScript : MonoBehaviour
         #endregion
 
         #region Zoom
-        this.GetComponent<Camera>().fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * 5;
-        #endregion
+        if (c.position.y <= maxY && c.position.y >= minY)
+        {
+            c.position = new Vector3(c.position.x, (c.position.y + Input.GetAxis("Mouse ScrollWheel") * -camZoomSpeed), c.position.z);
+            if (c.position.y >= maxY)
+                c.position = new Vector3(c.position.x, maxY, c.position.z);
+            if (c.position.y <= minY)
+                c.position = new Vector3(c.position.x, minY, c.position.z);
 
+        }
+      
+        
+        #endregion
 
     }
 
