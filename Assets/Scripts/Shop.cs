@@ -8,6 +8,20 @@ public class Shop : MonoBehaviour
     public Blueprints BowCatapult;
     BuildManager buildManager;
 
+
+    private static Shop instance;
+
+    public static Shop _Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<Shop>();
+            }
+            return instance;
+        }
+    }
     private void Start()
     {
         buildManager = BuildManager._Instance;

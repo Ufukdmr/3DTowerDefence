@@ -27,6 +27,12 @@ public class PlayerStats : MonoBehaviour
     public static int population;
     public int startPopulation;
 
+    public static int soldierCount;
+    public int startsoldierCount;
+
+    public static List<SoldierBlueprints> soldier = new List<SoldierBlueprints>();
+
+
     [SerializeField]
     Text txt_coin;
     [SerializeField]
@@ -44,6 +50,7 @@ public class PlayerStats : MonoBehaviour
         tinMineHealth = startTinMineHealth;
         sawmillHealth = startCityHealth;
         population = startPopulation;
+        soldierCount = startsoldierCount;
     }
 
     void Update()

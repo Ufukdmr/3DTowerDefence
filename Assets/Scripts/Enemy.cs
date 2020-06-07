@@ -44,8 +44,7 @@ public class Enemy : MonoBehaviour
         {
             a = Random.Range(1, 4);
         }
-       
-        Debug.Log(a);
+      
         target = Waypoints.points[0];
 
     }

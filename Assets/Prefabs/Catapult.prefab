@@ -201,8 +201,8 @@ GameObject:
   - component: {fileID: 5252527257831768216}
   - component: {fileID: 8524571747870185277}
   - component: {fileID: 3589327786377570734}
-  m_Layer: 0
-  m_Name: Katapult
+  m_Layer: 10
+  m_Name: Catapult
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -250,9 +250,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 15
-  fireRate: 1
+  archerCount: 0
   fireCountdown: 0
   turnspeed: 3
+  fireCountdownCatapult: 7
+  fireCountdownArcherTower: 0
+  towerLevel: 1
+  sprite: {fileID: 21300000, guid: 9114befc40dfc67459bee958373e7968, type: 3}
+  soldierArray: []
   enemyTag: Enemy
   arrowPrefab: {fileID: 1852457780178218584, guid: cfe2c350e5312764f9a025ff2cd793dd,
     type: 3}

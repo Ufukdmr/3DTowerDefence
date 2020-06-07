@@ -20,10 +20,7 @@ public class BuildManager : MonoBehaviour
     private Blueprints towerToBuild;
     float y;
 
-    [SerializeField]
-    Text txt_CostCoin;
-    [SerializeField]
-    Text txt_CostWood;
+
 
     public bool canBuild { get { return towerToBuild != null; } }
     //public bool hasCoin { get { return PlayerStats.coin>=towerToBuild.costCoin; } }

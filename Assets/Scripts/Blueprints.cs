@@ -10,6 +10,9 @@ public class Blueprints
     public int costCoin;
     public int costWood;
 
+    public int upgradeCostCoin;
+    public int upgradeCostWood;
+
     public Text txt_CostCoin;
     public Text txt_CostWood;
 

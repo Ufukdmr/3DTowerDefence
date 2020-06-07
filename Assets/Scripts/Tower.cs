@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -6,13 +7,22 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    private Transform target;
+ 
 
     [Header("Attributes")]
     public float range = 15f;
-    public int archerCount = 1;
+    public int archerCount = 0;
     public float fireCountdown = 0f;
     public float turnspeed = 3f;
+    public float fireCountdownCatapult = 0f;
+    public float fireCountdownArcherTower = 0f;
+    public int towerLevel=1;
+    public Sprite sprite;
+
+   
+    public List<SoldierBlueprints> soldierArray=new List<SoldierBlueprints>();
+    public int soldierArrayMaxCount = 0;
+
    
 
     [Header("")]
@@ -22,17 +32,20 @@ public class Tower : MonoBehaviour
     public Transform firePoint;
     public Transform partToRotate;
 
-   
+    SoldierBlueprints temporary;
     void Start()
     {
         InvokeRepeating("UptadeTarget", 0, 0.5f);
+       
     }
 
     void UptadeTarget()
     {
+        FoundToppestRange();
         GameObject[] enemies = GameObject.FindGameObjectsWithTag(enemyTag);
         float shortestDistance = Mathf.Infinity;
         GameObject nearestEnemy = null;
+      
         foreach (GameObject enemy in enemies)
         {
             float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
@@ -42,52 +55,108 @@ public class Tower : MonoBehaviour
                 nearestEnemy = enemy;
             }
         }
-
-        if (nearestEnemy != null && shortestDistance <= range)
+        foreach (SoldierBlueprints soldier in soldierArray)
         {
-            target = nearestEnemy.transform;
+            if (nearestEnemy != null && shortestDistance <=soldier.range)
+            {
+               soldier.target = nearestEnemy.transform;
+            }
+            else
+            {
+               soldier.target = null;
+            }
         }
-        else
-        {
-            target = null;
-        }
+        
     }
 
+    void FoundToppestRange()
+    {
+        for (int i = 0; i < soldierArray.Count- 1; i++)
+        {
+            for (int j = i; j < soldierArray.Count; j++)
+            {
+              
+                if (soldierArray[i].range < soldierArray[j].range)
+                {
+                    temporary = soldierArray[j];
+                    soldierArray[j] = soldierArray[i];
+                    soldierArray[i] = temporary;
+                }
+
+            }
+
+        }
+    }
     void Update()
     {
-        if (target == null)
+        if (soldierArray.Count == 0)
             return;
-        if (fireCountdown <= 0f)
-        {
-            Shoot();
-            fireCountdown = 1f / archerCount;
-        }
 
-        fireCountdown -= Time.deltaTime;
-
-        if (partToRotate != null)
-        {
-            Vector3 dir = target.position - transform.position;
-            Quaternion lookRotation = Quaternion.LookRotation(dir);
-            Vector3 rotation =Quaternion.Lerp(partToRotate.rotation,lookRotation,Time.deltaTime*turnspeed).eulerAngles;
-            partToRotate.rotation = Quaternion.Euler(-90f, rotation.y, -90f);
-        }
+        if (soldierArray[0].target == null)
+            return;
        
+        //if (partToRotate != null)
+        //{
+
+        //    //if (archerCount >= 3)
+        //    //{
+        //    //    Vector3 dir = target.position - transform.position;
+        //    //    Quaternion lookRotation = Quaternion.LookRotation(dir);
+        //    //    Vector3 rotation = Quaternion.Lerp(partToRotate.rotation, lookRotation, Time.deltaTime * turnspeed).eulerAngles;
+        //    //    partToRotate.rotation = Quaternion.Euler(-90f, rotation.y, -90f);
+
+        //    //    if (fireCountdown <= 0f)
+        //    //    {
+        //    //        Shoot();
+        //    //        fireCountdown = fireCountdownCatapult / archerCount;
+        //    //    }
+        //    //    fireCountdown -= Time.deltaTime;
+        //    //}
+
+        //}
+        //else
+        //{
+        if (soldierArray.Count > 0)
+        {
+            foreach (SoldierBlueprints soldier in soldierArray)
+            {
+                if (soldier.cooldown <= 0f && soldier.target != null)
+                {
+                    Shoot(soldier.target);
+                    soldier.cooldown = 1f / (float)towerLevel;
+                }
+
+                soldier.cooldown -= Time.deltaTime;
+            }
+
+          
+        }
+
+       
+
+        //}
+
     }
 
-    void Shoot()
+    
+    void Shoot(Transform targetSoldier)
     {
-       GameObject throws=(GameObject)Instantiate(arrowPrefab, firePoint.position, Quaternion.identity);
+
+        GameObject throws = (GameObject)Instantiate(arrowPrefab, firePoint.position, Quaternion.identity);
         Throwing throwing = throws.GetComponent<Throwing>();
 
         if (throwing != null)
         {
-            throwing.Seek(target);
+            throwing.Seek(targetSoldier);
         }
     }
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, range);
+        for (int i = 0; i < soldierArray.Count; i++)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position,soldierArray[i].range);
+        }
+       
     }
 }
